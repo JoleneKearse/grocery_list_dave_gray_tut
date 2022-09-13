@@ -25,23 +25,38 @@ function App() {
 
   const [newItem, setNewItem] = useState("");
 
+  const setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem("shopinglist", JSON.stringify(newItems));
+  };
+
+  const addItem = (item) => {
+    // add next id value. Check if there are items. Subtract 1 from items array length. Access id and add 1. Or return 1
+    const id = items.length ? items[items.length - 1].id + 1 : 1;
+    const myNewItem = { id, checked: false, item };
+    const listItems = [...items, myNewItem];
+    setAndSaveItems(listItems);
+  };
+
   const handleCheck = (id) => {
     // create new listItems array to alter checked status
     const listItems = items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
-    setItems(listItems);
-    localStorage.setItem("shopinglist", JSON.stringify(listItems));
+    setAndSaveItems(listItems);
   };
 
   const handleDelete = (id) => {
     const listItems = items.filter((item) => item.id !== id);
-    setItems(listItems);
-    localStorage.setItem("shoppinglist", JSON.stringify(listItems));
+    setAndSaveItems(listItems);
   };
 
   const handleSubmit = (e) => {
-    console.log("submitted");
+    e.preventDefault();
+    // because AddItem.js form input has required attribute, it shouldn't be blank, but we can check anyway
+    if (!newItem) return;
+    addItem(newItem);
+    setNewItem("");
   };
 
   return (
